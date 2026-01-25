@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Churn Prediction</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <h1>Customer Churn Prediction</h1>
+      <p>Fill customer info and get churn probability.</p>
+    </header>
+
+    <form id="churnForm" class="card">
+      <div class="grid">
+
+        <div class="field">
+          <label>Gender</label>
+          <select name="gender" required>
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Senior Citizen</label>
+          <select name="SeniorCitizen" required>
+            <option value="">Select</option>
+            <option value="0">0 (No)</option>
+            <option value="1">1 (Yes)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Partner</label>
+          <select name="Partner" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Dependents</label>
+          <select name="Dependents" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tenure (months)</label>
+          <input type="number" name="tenure" min="0" value="12" required />
+        </div>
+
+        <div class="field">
+          <label>Phone Service</label>
+          <select name="PhoneService" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Multiple Lines</label>
+          <select name="MultipleLines" required>
+            <option value="">Select</option>
+            <option>No</option>
+            <option>Yes</option>
+            <option>No phone service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Internet Service</label>
+          <select name="InternetService" required>
+            <option value="">Select</option>
+            <option>DSL</option>
+            <option>Fiber optic</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Online Security</label>
+          <select name="OnlineSecurity" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Online Backup</label>
+          <select name="OnlineBackup" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Device Protection</label>
+          <select name="DeviceProtection" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tech Support</label>
+          <select name="TechSupport" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Streaming TV</label>
+          <select name="StreamingTV" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Streaming Movies</label>
+          <select name="StreamingMovies" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Contract</label>
+          <select name="Contract" required>
+            <option value="">Select</option>
+            <option>Month-to-month</option>
+            <option>One year</option>
+            <option>Two year</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Paperless Billing</label>
+          <select name="PaperlessBilling" required>
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Payment Method</label>
+          <select name="PaymentMethod" required>
+            <option value="">Select</option>
+            <option>Electronic check</option>
+            <option>Mailed check</option>
+            <option>Bank transfer (automatic)</option>
+            <option>Credit card (automatic)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Monthly Charges</label>
+          <input type="number" step="0.01" name="MonthlyCharges" value="75.5" required />
+        </div>
+
+        <div class="field">
+          <label>Total Charges</label>
+          <input type="number" step="0.01" name="TotalCharges" value="900.0" required />
+        </div>
+
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="predictBtn">Predict</button>
+        <button type="button" class="secondary" id="fillExampleBtn">Fill Example</button>
+      </div>
+    </form>
+
+    <div class="card result" id="resultCard" style="display:none;">
+      <h2>Prediction Result</h2>
+      <p><strong>Churn Probability:</strong> <span id="probability">-</span></p>
+      <p><strong>Churn Prediction:</strong> <span id="prediction">-</span></p>
+      <p class="hint" id="hintText"></p>
+    </div>
+
+    <footer class="footer">
+      <small>Frontend (HTML/CSS) connected to FastAPI.</small>
+    </footer>
+  </div>
+
+  <script>
+    // Change this to your backend URL (local docker / deployed)
+    const API_URL = "http://127.0.0.1:8000/predict";
+
+    const form = document.getElementById("churnForm");
+    const resultCard = document.getElementById("resultCard");
+    const probabilityEl = document.getElementById("probability");
+    const predictionEl = document.getElementById("prediction");
+    const hintText = document.getElementById("hintText");
+    const predictBtn = document.getElementById("predictBtn");
+    const fillExampleBtn = document.getElementById("fillExampleBtn");
+
+    fillExampleBtn.addEventListener("click", () => {
+      form.gender.value = "Male";
+      form.SeniorCitizen.value = "0";
+      form.Partner.value = "Yes";
+      form.Dependents.value = "No";
+      form.tenure.value = 12;
+      form.PhoneService.value = "Yes";
+      form.MultipleLines.value = "No";
+      form.InternetService.value = "Fiber optic";
+      form.OnlineSecurity.value = "No";
+      form.OnlineBackup.value = "Yes";
+      form.DeviceProtection.value = "No";
+      form.TechSupport.value = "No";
+      form.StreamingTV.value = "Yes";
+      form.StreamingMovies.value = "Yes";
+      form.Contract.value = "Month-to-month";
+      form.PaperlessBilling.value = "Yes";
+      form.PaymentMethod.value = "Electronic check";
+      form.MonthlyCharges.value = 75.5;
+      form.TotalCharges.value = 900.0;
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      predictBtn.disabled = true;
+      predictBtn.textContent = "Predicting...";
+
+      const payload = {
+        gender: form.gender.value,
+        SeniorCitizen: Number(form.SeniorCitizen.value),
+        Partner: form.Partner.value,
+        Dependents: form.Dependents.value,
+        tenure: Number(form.tenure.value),
+        PhoneService: form.PhoneService.value,
+        MultipleLines: form.MultipleLines.value,
+        InternetService: form.InternetService.value,
+        OnlineSecurity: form.OnlineSecurity.value,
+        OnlineBackup: form.OnlineBackup.value,
+        DeviceProtection: form.DeviceProtection.value,
+        TechSupport: form.TechSupport.value,
+        StreamingTV: form.StreamingTV.value,
+        StreamingMovies: form.StreamingMovies.value,
+        Contract: form.Contract.value,
+        PaperlessBilling: form.PaperlessBilling.value,
+        PaymentMethod: form.PaymentMethod.value,
+        MonthlyCharges: Number(form.MonthlyCharges.value),
+        TotalCharges: Number(form.TotalCharges.value)
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText || "Request failed");
+        }
+
+        const data = await res.json();
+
+        const prob = Number(data.churn_probability);
+        const pred = Number(data.churn_prediction);
+
+        probabilityEl.textContent = (prob * 100).toFixed(2) + "%";
+        predictionEl.textContent = pred === 1 ? "Churn (Yes)" : "No Churn (No)";
+
+        hintText.textContent =
+          pred === 1
+            ? "High churn risk: consider retention offers, discounts, or support."
+            : "Low churn risk: customer likely to stay.";
+
+        resultCard.style.display = "block";
+      } catch (err) {
+        alert("Error: " + err.message + "\n\nCheck API_URL and CORS.");
+      } finally {
+        predictBtn.disabled = false;
+        predictBtn.textContent = "Predict";
+      }
+    });
+  </script>
+</body>
+</html>
